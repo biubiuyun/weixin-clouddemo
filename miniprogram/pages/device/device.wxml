@@ -1,0 +1,67 @@
+<cu-custom bgColor="bg-gradual-blue" isimage="{{true}}">
+  <view slot="content">IOT</view>
+  <view slot="imageText" class="cu-avatar l round solids" style="background-image:url({{userInfo.avatarUrl}})"> </view>
+</cu-custom>
+
+<scroll-view scroll-y class="scrollPage">
+
+  <!-- 设备列表 -->
+  <view class="cu-bar bg-white solid-bottom margin-top">
+    <view class="action">
+      <text class="cuIcon-title text-orange "></text> 设备列表
+    </view>
+    <view class="action">
+      <button class="cu-btn bg-green shadow" bindtap="showModal" data-target="menuModal">添加</button>
+    </view>
+  </view>
+
+  <!-- 设置弹窗 -->
+  <view class="cu-modal {{add == true?'show':''}}">
+    <view class="cu-dialog">
+      <view class="cu-bar bg-white justify-end">
+        <view class="content">请添加设备信息</view>
+        <view class="action" bindtap="hideModal">
+          <text class="cuIcon-close text-red"></text>
+        </view>
+      </view>
+
+      <view class="top">
+          <view class="inputView bg-white ">
+              <input type="text" placeholder="  请输入设备名称" placeholder-class="ph" value="{{inputvalue}}" bindinput="input_devicename"/>
+          </view>
+          
+          <view class="inputView bg-white ">
+              <input type="number" placeholder="  请输入设备id" password="true"  placeholder-class="ph" value="{{inputvalue}}" bindinput="input_deviceid"/>
+          </view>
+      </view>
+
+      <view class="cu-bar bg-white justify-end">
+        <view class="action">
+          <button class="cu-btn line-green text-green" bindtap="cancel">取消</button>
+          <button class="cu-btn bg-green margin-left" bindtap="confirm">确定</button>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- 列表实现 -->
+  <view class="cu-list menu ">
+      <view class="cu-item {{modalName=='move-box-'+ index?'move-cur':''}}" wx:for="{{device_list}}" wx:key bindtouchstart="ListTouchStart" bindtouchmove="ListTouchMove" bindtouchend="ListTouchEnd" data-target="move-box-{{index}}">
+
+        <view class="content">
+          <text class="cuIcon-mobilefill text-blue"></text>
+          <text class="text-grey">{{item.devicename}}</text>
+        </view>
+
+        <view class="action">
+          <view class="cu-tag round light rightl {{device_state.devices[index].online == true ?'bg-orange':''}}">online</view>
+          <radio checked="{{devicecheck == index ? true:false}}" bindtap="checkdevice" data-target="{{index}}"> </radio>
+        </view>
+
+        <view class="move">
+          <view class="bg-red" bindtap="deletedevice" data-target="{{item.deviceid}}" >删除</view>
+        </view>
+        
+      </view>
+  </view>
+
+</scroll-view>

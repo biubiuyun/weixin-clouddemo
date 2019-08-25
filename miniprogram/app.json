@@ -1,0 +1,43 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/device/device",
+    "pages/warning/warning"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "ColorUI",
+    "navigationStyle": "custom",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "运行监控",
+        "selectedIconPath": "images/tabbar/basics_cur.png",
+        "iconPath": "images/tabbar/basics.png"
+      },
+      {
+        "pagePath": "pages/device/device",
+        "text": "设备列表",
+        "selectedIconPath": "images/tabbar/component_cur.png",
+        "iconPath": "images/tabbar/component.png"
+      },
+      {
+        "pagePath": "pages/warning/warning",
+        "text": "故障信息",
+        "selectedIconPath": "images/tabbar/plugin_cur.png",
+        "iconPath": "images/tabbar/plugin.png"
+      }
+    ]
+  },
+  "usingComponents": {
+      "cu-custom": "/colorui/components/cu-custom"
+    },
+
+  "sitemapLocation": "sitemap.json"
+  
+}

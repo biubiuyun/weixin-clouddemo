@@ -1,0 +1,123 @@
+<cu-custom bgColor="bg-gradual-blue" isimage="{{true}}">
+  <view slot="content">IOT</view>
+  <view slot="imageText" class="cu-avatar l round solids" style="background-image:url({{userInfo.avatarUrl}})"> </view>
+</cu-custom>
+
+<scroll-view scroll-y class="scrollPage">
+  <!-- <image src='/images/BasicsBg.png' mode='widthFix' class='png' style='width:100%;height:486rpx'></image> -->
+  <!-- 运行模式 -->
+  <view class="cu-bar bg-white solid-bottom">
+    <view class="action">
+      <text class="cuIcon-title text-blue"></text>
+      <text bindtap="runmodeclick">运行模式 ></text>
+      <view class="cu-tag round text-blue right " wx:if="{{runmode==0}}">定值运行</view>
+      <view class="cu-tag round text-blue right" wx:else="{{runmode==1}}">程式运行</view>
+    </view>
+  </view>
+  <!-- 设置弹窗 选择运行模式 -->
+  <view class="cu-modal {{showmodal == true?'show':''}}" bindtap="hideModal">
+    <view class="cu-dialog">
+      <view class="cu-bar bg-white justify-end">
+        <view class="content">运行模式</view>
+        <view class="action" bindtap="hideModal">
+          <text class="cuIcon-close text-red"></text>
+        </view>
+      </view>
+      <button class="cu-btn line-blue text-blue right width" bindtap="runmodeselect" data-target="0">定值运行</button>
+      <button class="cu-btn line-green text-green right width" bindtap="runmodeselect" data-target="1">程式运行</button>
+    </view>
+  </view>
+  <!-- 设置弹窗 输入设定温度等-->
+  <view class="cu-modal {{showinputmodal == true?'show':''}}">
+    <view class="cu-dialog">
+      <view class="cu-bar bg-white justify-end">
+        <view class="content" wx:if="{{inputmodal==0}}">设定温度</view>
+        <view class="content" wx:elif="{{inputmodal==1}}">设定湿度</view>
+        <view class="content" wx:else="{{inputmodal==2}}">程式选择</view>
+        <view class="action" bindtap="hideModal">
+          <text class="cuIcon-close text-red"></text>
+        </view>
+      </view>
+
+      <view class="top">
+          <view class="inputView bg-white ">
+              <input type="text" placeholder="  请输入设定温度℃" placeholder-class="ph" value="{{inputvalue}}" bindinput="input_tempsv"wx:if="{{inputmodal==0}}"/>
+              <input type="text" placeholder="  请输入设定湿度%" placeholder-class="ph" value="{{inputvalue}}" bindinput="input_humisv"wx:if="{{inputmodal==1}}"/>
+              <input type="text" placeholder="  请输入程式编号" placeholder-class="ph" value="{{inputvalue}}" bindinput="input_progsv"wx:if="{{inputmodal==2}}"/>
+          </view>
+      </view>
+
+      <view class="cu-bar bg-white justify-end">
+        <view class="action">
+          <button class="cu-btn line-green text-green" bindtap="inputcancel">取消</button>
+          <button class="cu-btn bg-green margin-left" bindtap="inputconfirm">确定</button>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- 设备名称及在线 -->
+  <view class="padding bg-white">
+    <view class="cu-capsule round">
+      <view class="cu-tag bg-green ">设备名称</view>
+      <view class="cu-tag line-blue">{{devicename}}</view>
+    </view>
+    <view class="cu-capsule round right">
+      <view class="cu-tag {{online == true?'bg-blue':'bg-grey'}} ">
+        <text class="cuIcon-mobilefill"></text>
+      </view>
+      <view class="cu-tag {{online == true?'line-yellow':'line-grey'}}">
+        设备在线
+      </view>
+    </view>
+  </view>
+  <!-- 运行监控 -->
+  <view class='nav-list'>
+    <navigator open-type="navigate" hover-class='none' url="/pages/basics/{{item.name}}/{{item.name}}" class="nav-li bg-{{item.color}}" wx:for="{{elements}}" wx:key>
+      <view class="nav-title" wx:if="{{index== 0}}">{{temp_pv}} ℃</view>
+      <view class="nav-name" wx:if="{{index== 0}}">SV {{temp_sv}} ℃</view>
+      <view class="nav-name" wx:if="{{index== 0}}">PID {{temp_pid}} %</view>
+
+      <view class="nav-title" wx:if="{{index== 1}}">{{humi_pv}} %</view>
+      <view class="nav-name" wx:if="{{index== 1}}">SV {{humi_sv}} %</view>
+      <view class="nav-name" wx:if="{{index== 1}}">PID {{humi_pid}} %</view>
+      <text class='cuIcon-{{item.icon}}'></text>
+    </navigator>
+  </view>
+
+  <!-- 定值设定 -->
+  <view class="cu-bar margin-top bg-white">
+    <view class="action">
+      <text class="cuIcon-title text-blue"></text>
+      <text bindtap="test">定值设定 </text> 
+      <view class="margin-tb-sm margin-left-xl text-center">
+        <button class="cu-btn round bg-red left right" bindtap="tempsetevent">温度设定</button>
+        <button class="cu-btn round bg-blue" bindtap="humisetevent">湿度设定</button>
+      </view>
+    </view>
+  </view>
+  <!-- 程式选择 -->
+  <view class="cu-bar margin-top bg-white">
+    <view class="action">
+      <text class="cuIcon-title text-blue"></text>
+      <text bindtap="test">程式选择 </text> 
+      <view class="margin-tb-sm margin-left-xl text-center">
+        <button class="cu-btn round bg-cyan left-x " bindtap="progsetevent">程式编号</button>
+      </view>
+    </view>
+  </view> 
+  <!-- 其他信息 -->
+  <view class="cu-list grid col-3 no-border">
+    <view class="cu-item" wx:for="{{run_info}}" wx:key wx:if="{{index<gridCol*2}}">
+      <view class="text-blue text-bold"> {{item.name}}</view>
+      <text bindtap="test">{{item.value}} </text>
+    </view>
+  </view>
+  <!-- 运行停止按钮 -->
+  <view class="cu-bar bg-white solid-bottom">
+    <!-- <view class="action"> -->
+      <button class="cu-btn round left right width {{run_state == 1?'bg-grey':'bg-red'}}" bindtap="runstateselect" data-target="1">  运行  </button>
+      <button class="cu-btn round right width {{run_state == 1?'bg-blue':'bg-grey'}}" bindtap="runstateselect" data-target="0">  停止  </button>
+    <!-- </view> -->
+  </view>
+
+</scroll-view>

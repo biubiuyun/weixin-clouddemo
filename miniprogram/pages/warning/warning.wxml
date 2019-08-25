@@ -1,0 +1,40 @@
+<cu-custom bgColor="bg-gradual-blue" isimage="{{true}}">
+  <view slot="content">IOT</view>
+  <view slot="imageText" class="cu-avatar l round solids" style="background-image:url({{userInfo.avatarUrl}})"> </view>
+</cu-custom>
+
+<scroll-view scroll-y class="scrollPage">
+  <!-- 报警信息时间轴 -->
+  <view class="cu-timeline">
+    <!-- 1条报警信息 -->
+    <view class="cu-time">08-22</view>
+      <view class="cu-item">
+        <view class="content">
+          <view class="cu-capsule radius">
+            <view class="cu-tag bg-cyan">上午</view>
+            <view class="cu-tag line-cyan">10:00</view>
+          </view>
+          <view class="cu-capsule radius">
+            <view class="cu-tag bg-blue">设备</view>
+            <view class="cu-tag line-green">QT_0001</view>
+          </view>
+          <view class="margin-top">超温报警</view>
+        </view>
+      </view>
+
+      <view class="cu-item">
+        <view class="content">
+          <view class="cu-capsule radius">
+            <view class="cu-tag bg-cyan">上午</view>
+            <view class="cu-tag line-cyan">12:00</view>
+          </view>
+          <view class="cu-capsule radius">
+            <view class="cu-tag bg-blue">设备</view>
+            <view class="cu-tag line-green">QT_0001</view>
+          </view>
+          <view class="margin-top">缺水</view>
+        </view>
+      </view>
+
+  </view>
+</scroll-view>

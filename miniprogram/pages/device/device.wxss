@@ -1,0 +1,20 @@
+/* pages/index/index.wxss */
+.top{
+    margin-top:8%;
+}
+.inputView{
+    margin:40rpx 20rpx 0rpx 20rpx;
+    border: 2rpx solid rgb(220, 220, 220);
+    border-radius: 40rpx;
+    height: 80rpx;
+}
+input{
+    margin-left: 25rpx;
+    margin-right: 25rpx;
+    height: 80rpx;
+    font-family: "Microsoft soft";
+}
+.ph{
+    color: gainsboro;
+    font-size: 0.875em;
+}
