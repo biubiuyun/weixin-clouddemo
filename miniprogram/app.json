@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/index/index",
     "pages/device/device",
+    "pages/index/index",
     "pages/warning/warning"
   ],
   "window": {
@@ -15,16 +15,16 @@
     "borderStyle": "white",
     "list": [
       {
-        "pagePath": "pages/index/index",
-        "text": "运行监控",
-        "selectedIconPath": "images/tabbar/basics_cur.png",
-        "iconPath": "images/tabbar/basics.png"
-      },
-      {
         "pagePath": "pages/device/device",
         "text": "设备列表",
         "selectedIconPath": "images/tabbar/component_cur.png",
         "iconPath": "images/tabbar/component.png"
+      },
+      {
+        "pagePath": "pages/index/index",
+        "text": "运行监控",
+        "selectedIconPath": "images/tabbar/basics_cur.png",
+        "iconPath": "images/tabbar/basics.png"
       },
       {
         "pagePath": "pages/warning/warning",

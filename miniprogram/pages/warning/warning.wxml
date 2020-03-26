@@ -1,40 +1,37 @@
 <cu-custom bgColor="bg-gradual-blue" isimage="{{true}}">
-  <view slot="content">IOT</view>
+  <view slot="content">报警信息</view>
   <view slot="imageText" class="cu-avatar l round solids" style="background-image:url({{userInfo.avatarUrl}})"> </view>
 </cu-custom>
 
-<scroll-view scroll-y class="scrollPage">
+      <!-- date: date -->
+ 
+<scroll-view scroll-y class="scrollPage" wx:if="{{warning_curvlist.length > 0}}">
   <!-- 报警信息时间轴 -->
-  <view class="cu-timeline">
+  <view class="cu-timeline" wx:for="{{warning_curvlist}}" wx:key>
     <!-- 1条报警信息 -->
-    <view class="cu-time">08-22</view>
-      <view class="cu-item">
-        <view class="content">
-          <view class="cu-capsule radius">
-            <view class="cu-tag bg-cyan">上午</view>
-            <view class="cu-tag line-cyan">10:00</view>
-          </view>
-          <view class="cu-capsule radius">
-            <view class="cu-tag bg-blue">设备</view>
-            <view class="cu-tag line-green">QT_0001</view>
-          </view>
-          <view class="margin-top">超温报警</view>
-        </view>
-      </view>
+    <view class="cu-time" wx:if="{{index == 0}}" > {{item.date}} </view>
 
-      <view class="cu-item">
-        <view class="content">
-          <view class="cu-capsule radius">
-            <view class="cu-tag bg-cyan">上午</view>
-            <view class="cu-tag line-cyan">12:00</view>
-          </view>
-          <view class="cu-capsule radius">
-            <view class="cu-tag bg-blue">设备</view>
-            <view class="cu-tag line-green">QT_0001</view>
-          </view>
-          <view class="margin-top">缺水</view>
+    <view class="cu-item {{index == (warning_curvlist.length-1)?'text-red cuIcon-attentionforbidfill':''}}">
+      <view class="content ">
+        <view class="cu-capsule radius">
+          <view class="cu-tag bg-cyan">{{item.time}}</view>
         </view>
+        <view class="cu-capsule radius">
+          <view class="cu-tag bg-blue">设备</view>
+          <view class="cu-tag line-green">{{item.devicename}}</view>
+        </view>
+        <view class="margin-top">{{item.warningmessage}}</view>
       </view>
-
+    </view>
   </view>
 </scroll-view>
+
+
+<view class="bg-white flex-sub radius shadow-lg" wx:else>
+  <view class="UCenter-bg">
+    <view class="text-xl text-green">暂无报警 ...
+    </view>
+  </view>
+  <image src="https://image.weilanwl.com/gif/loading-white.gif" mode="aspectFit" class="gif-white response" style="height:240rpx"></image>
+</view>
+

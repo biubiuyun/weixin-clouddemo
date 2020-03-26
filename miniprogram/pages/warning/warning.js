@@ -8,14 +8,14 @@ Page({
    * 页面的初始数据
    */
   data: {
-  
+    userInfo: {},
+    warning_curvlist:[]
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    
   },
 
   /**
@@ -29,7 +29,11 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    
+    this.setData({
+      userInfo: app.globalData.userInfo,
+      warning_curvlist: app.globalData.warning_curvlist
+    })  
+    console.log(this.data.warning_curvlist)
   },
 
   /**

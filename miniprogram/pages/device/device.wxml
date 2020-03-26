@@ -1,9 +1,15 @@
 <cu-custom bgColor="bg-gradual-blue" isimage="{{true}}">
-  <view slot="content">IOT</view>
+  <view slot="content">设备信息</view>
   <view slot="imageText" class="cu-avatar l round solids" style="background-image:url({{userInfo.avatarUrl}})"> </view>
 </cu-custom>
 
-<scroll-view scroll-y class="scrollPage">
+<view class="margin-xl padding-xl bg-white radius shadow shadow-lg" wx:if="{{!hasUserInfo && canIUse}}">
+  <view class="flex justify-center">
+    <button open-type="getUserInfo" bindgetuserinfo="getUserInfo" class='cu-btn round bg-green shadow'> 登陆 </button>
+  </view>
+</view>
+
+<scroll-view scroll-y class="scrollPage" wx:else>
 
   <!-- 设备列表 -->
   <view class="cu-bar bg-white solid-bottom margin-top">
@@ -27,11 +33,13 @@
 
       <view class="top">
           <view class="inputView bg-white ">
-              <input type="text" placeholder="  请输入设备名称" placeholder-class="ph" value="{{inputvalue}}" bindinput="input_devicename"/>
+              <input type="text" placeholder="  请输入设备名称" placeholder-class="ph"  value="{{inputvalue}}" bindinput="input_devicename"/>
           </view>
-          
           <view class="inputView bg-white ">
-              <input type="number" placeholder="  请输入设备id" password="true"  placeholder-class="ph" value="{{inputvalue}}" bindinput="input_deviceid"/>
+              <input type="number" placeholder="  请输入设备id" placeholder-class="ph"  value="{{inputvalue}}" bindinput="input_deviceid"/>
+          </view>
+          <view class="inputView bg-white ">
+              <input type="number" placeholder="  请输入设备密匙" password="true"  placeholder-class="ph"  value="{{inputvalue}}" bindinput="input_devicepassword"/>
           </view>
       </view>
 
@@ -53,15 +61,14 @@
         </view>
 
         <view class="action">
-          <view class="cu-tag round light rightl {{device_state.devices[index].online == true ?'bg-orange':''}}">online</view>
+          <view class="cu-tag round light rightl {{device_state.devices[index].online == true ?'bg-orange':''}}">{{device_state.devices[index].online == true? '设备在线':'设备离线'}}</view>
           <radio checked="{{devicecheck == index ? true:false}}" bindtap="checkdevice" data-target="{{index}}"> </radio>
         </view>
 
         <view class="move">
-          <view class="bg-red" bindtap="deletedevice" data-target="{{item.deviceid}}" >删除</view>
+          <view class="bg-red" bindtap="deletedevice" data-target="{{index}}" >删除</view>
         </view>
         
       </view>
   </view>
-
 </scroll-view>

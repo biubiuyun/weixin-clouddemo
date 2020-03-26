@@ -2,8 +2,20 @@
 App({
   globalData: {
     userInfo: null,
-    devices: 46202172,
     api_key: '1WnxTijFsEp7dWexCtkzaNPqUgc=',
+    deviceid:null,
+    devicename:'',
+    devicepassword:null,
+    devicecheck:null,
+    devicestate:false,
+
+    warning_list: ["", "Error:IN0", "Error:IN1", "Error:IN2", "Error:IN3", "Error:IN4", "Error:IN5", "Error:IN6", "Error:IN7",
+      "Error:IN10", "Error:IN11", "Error:IN12", "Error:IN13", "Error:IN14", "Error:IN15","","",
+      "ALM5 干球低温", "ALM5 干球高温", "ALM5 湿球低温", "ALM5 湿球高温", "ALM6 干球低温", "ALM6 干球高温", "ALM6 湿球低温", "ALM6 湿球高温", "",
+      "ALM1", "ALM1", "ALM1", "ALM1", "ALM2", "ALM2", "ALM2", "ALM2", "ALM3", "ALM3", "ALM3", "ALM3", "ALM4", "ALM4", "ALM4", "ALM4",
+      "干球断线", "湿球断线", "485通信异常"
+    ],
+    warning_curvlist:[]
   },
   onLaunch: function () {
     
@@ -19,7 +31,6 @@ App({
         traceUser: true,
       })
     }
-
     // this.globalData = {}
     // 展示本地存储能力
     var logs = wx.getStorageSync('logs') || []
@@ -57,10 +68,15 @@ App({
       success: e => {
         this.globalData.StatusBar = e.statusBarHeight;
         let custom = wx.getMenuButtonBoundingClientRect();
+        if (!custom.top || !custom.bottom) {
+          custom.bottom = 56
+          custom.top = 24
+        }
         this.globalData.Custom = custom;
         this.globalData.CustomBar = custom.bottom + custom.top - e.statusBarHeight;
       }
     })
+
   },
   get_datastreams: function (datastreams, cb) {
     wx.request({
@@ -111,6 +127,18 @@ App({
         'api-key': this.globalData.api_key //
       },
       method: "POST",
+      success(res) {
+        cb(res.data);
+      }
+    })
+  },
+  getcmd_state:function(cmd_uuid, cb)
+  {
+    wx.request({
+      url: 'https://api.heclouds.com/cmds/' + cmd_uuid,
+      header: {
+        'api-key': this.globalData.api_key
+      },
       success(res) {
         cb(res.data);
       }

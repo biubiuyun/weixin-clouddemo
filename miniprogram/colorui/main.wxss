@@ -766,15 +766,21 @@ radio.white[checked] .wx-radio-input {
 }
 
 .cu-btn.left {
-  margin-left: 60rpx;
+  margin-left: 30rpx;
 }
 .cu-btn.left-x {
-  margin-left: 270rpx;
+  margin-left: 240rpx;
 }
 .cu-btn.right {
   margin-right: 40rpx;
 }
 
+.cu-btn.runleft {
+  margin-left: 80rpx;
+}
+.cu-btn.runright {
+  margin-right: 80rpx;
+}
 
 
 button.icon.lg {

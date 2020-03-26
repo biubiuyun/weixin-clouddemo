@@ -6,16 +6,23 @@ Page({
    * 页面的初始数据
    */
   data: {
+    userInfo: {},
+    view:true,
+    //指令
     runstate_cmd: '0001',
     runmode_cmd: '0002',
     runprog_cmd: '0003',
     tempsv_cmd: '0004',
     humisv_cmd: '0005',
-
-    devicename: 'QT_0001',
-    device_id: 46202172,
+    //当前指令码
+    functioncmd:null,
+    //设备信息
+    devicename: '',
+    device_id: null,
+    devicepassword:null,
+    devicecheck:null,
     online: false,
-
+    //设备值
     runmode: 0,
     run_state: 0,
     temp_sv: 0,
@@ -36,8 +43,11 @@ Page({
 
     nowseg_time: 0,
     time_curr: 0,
-    warning_message: '',
 
+    warning_flag:false,
+    warning_message:'',
+    warning_modal:false,
+    warning_curvlist: [],
 
     showmodal:false,
     showinputmodal:false,
@@ -47,24 +57,24 @@ Page({
     inputtempvalue:null,
     inputhumivalue: null,
     inputprogvalue: null,
-    elements: [{
-      title: '50.0',
-      name: '50.0',
-      pid: '25.5',
+    
+    //查询指令用
+    cmd_uuid:null,
+    cmdfail:false,
+    waitingcmd:false,
+    //运行信息背景
+    backinfolist: [{
       color: 'cyan',
-      icon: 'hotfill'
+      icon: 'fire'
     },
     {
-      title: '50.0',
-      name: '50.0',
-      pid: '25.5',
       color: 'blue',
-      icon: 'colorlens'
-    },
+      icon: 'Raindrops'
+    }
     ],
     run_info: [{
       name: '程式名称',
-      value: '1'
+      value: ''
     }, {
         name: '运行状态',
         value: ''
@@ -80,45 +90,40 @@ Page({
     }, {
         name: '运行总时间',
         value: ''
-    }, {
-      icon: 'discoverfill',
-      color: 'purple',
-      badge: 0,
-      name: '发现'
-    }],
-    gridCol: 3,
-    skin: false
+    },]
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    var pagethis = this
+    pagethis.setData({
+      devicename: app.globalData.devicename,
+      device_id: app.globalData.deviceid,
+      devicepassword:app.globalData.devicepassword,
+      devicecheck: app.globalData.devicecheck,
+      online: app.globalData.devicestate
+    })
+ 
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-    setInterval(this.device_getvalue, 2000);
+    //获取设备value
+     setInterval(this.device_getvalue, 2000)
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    var pagethis = this
-    wx.getStorage({
-      key: 'selectdevice',
-      success: function(res) {
-        pagethis.setData({
-          devicename: res.data.name,
-          device_id: res.data.id,
-          online: res.data.state
-        })
-      },
-    })
+    //获取选中设备信息
+    this.setData({
+      userInfo: app.globalData.userInfo
+    }) 
   },
 
   /**
@@ -155,6 +160,7 @@ Page({
   onShareAppMessage: function () {
 
   },
+
   //运行模式显示modal
   runmodeclick: function () {
     console.log('test')
@@ -166,27 +172,77 @@ Page({
   hideModal(e) {
     this.setData({
       showmodal: false,
-      showinputmodal:false
+      showinputmodal:false,
+      warning_modal:false,
+      cmdfail:false
     })
   },
   //运行模式选择
   runmodeselect(e) {
     this.post_cmd(this.data.device_id, 0, this.data.runmode_cmd, e.currentTarget.dataset.target)
   },
+
   //发送指令函数
   post_cmd: function (deviceid, apikey, functionnumber, value) {
-    if (deviceid > 0) {
+    if (deviceid > 0 && this.data.online == true) {
       app.post_cmd(deviceid, apikey, functionnumber, value, this.postcmd_handler)
+      this.setData({
+        waitingcmd:true,
+        functioncmd:functionnumber
+      })
+    }else{
+      //弹出设备不在线指令
     }
   },
   //发送指令完成处理函数
   postcmd_handler: function (res) {
-    console.log(res.data)
+    this.setData({
+      cmd_uuid: res.data.cmd_uuid
+    })
+    setTimeout(this.getcmdstate,3000)
+  },
+  //获取指令状态
+  getcmdstate:function()
+  {
+    if (this.data.cmd_uuid != null) {
+      app.getcmd_state(this.data.cmd_uuid, this.getcmdstate_handler)
+    }
+  },
+  //获取指令状态处理函数
+  getcmdstate_handler:function(res){
+    this.setData({
+      waitingcmd: false,
+      functioncmd:null
+    })
+    if(res.data == null)
+    {
+      return 
+    }
+    if (res.data.status != 2)
+    {
+       //弹窗提醒指令失败
+       this.setData({
+         warning_modal:true,
+         cmdfail:true
+         
+       }) 
+    }
   },
   //获取设备数据流
   device_getvalue: function () {
-    var id = 46202172
-    app.get_devicevalue(id, 0, this.devicevalue_handler)
+
+    this.setData({
+      devicename: app.globalData.devicename,
+      device_id: app.globalData.deviceid,
+      devicepassword: app.globalData.devicepassword,
+      devicecheck: app.globalData.devicecheck,
+      online: app.globalData.devicestate
+    })
+    if(this.data.device_id != null)
+    {
+      app.get_devicevalue(this.data.device_id, 0, this.devicevalue_handler)
+    }
+    
   },
   //设备数据处理函数
   devicevalue_handler: function (res) {
@@ -194,23 +250,67 @@ Page({
     pagethis.setData({
       device_value: res.data
     })
-    // console.log(pagethis.data.device_value.datastreams)
-    for (var index in pagethis.data.device_value.datastreams) {
+      // console.log(pagethis.data.device_value.datastreams.length)
+      for (var index in pagethis.data.device_value.datastreams) {
       //数据流名称
       var valuename = pagethis.data.device_value.datastreams[index].id
       //数据流时间
       // var time = pagethis.data.device_value.datastreams[index].datapoints[0].at
       // console.log(time)
       switch (valuename) {
+        case 'Run_State':
+          if (pagethis.data.device_value.datastreams[index].datapoints[0].value == 0) {
+            pagethis.data.run_info[1].value = '停止'
+            pagethis.data.warning_flag = false
+          } else {
+            pagethis.data.run_info[1].value = '正在运行'
+            pagethis.data.warning_flag = true
+          }
+          pagethis.setData({
+            run_state: pagethis.data.device_value.datastreams[index].datapoints[0].value,
+            run_info: pagethis.data.run_info,
+            warning_flag: pagethis.data.warning_flag
+          })
+          break;
         case 'Humi_SV':
           pagethis.setData({
             humi_sv: pagethis.data.device_value.datastreams[index].datapoints[0].value
           })
           break;
         case 'Warning_message':
-          // pagethis.setData({
-          //   humi_sv: pagethis.data.device_value.datastreams[index].datapoints[0].value
-          // })
+          var warningreal = false 
+          var warningnum = 0
+          var datestr = ''
+          var date = ''
+          var time = ''
+          //如果不在线或停机状态，停止报警
+          if (pagethis.data.online == false || pagethis.data.warning_flag == false)
+          {
+            break
+          }
+          //有报警信息
+          if (pagethis.data.device_value.datastreams[index].datapoints[0].value > 0)
+          {
+            warningreal = true
+            warningnum = pagethis.data.device_value.datastreams[index].datapoints[0].value > 44 ? 44 : pagethis.data.device_value.datastreams[index].datapoints[0].value
+            datestr = pagethis.data.device_value.datastreams[index].datapoints[0].at
+            date = datestr.substr(5, 5)
+            time = datestr.substr(11, 8)
+            var newarray = [{
+              warningmessage: app.globalData.warning_list[warningnum],
+              date: date,
+              time: time,
+              devicename:pagethis.data.devicename
+            }]
+
+            pagethis.setData({
+              warning_message: app.globalData.warning_list[warningnum],
+              warning_modal: warningreal,
+              warning_curvlist: pagethis.data.warning_curvlist.concat(newarray),
+              warning_flag: false
+            })
+            app.globalData.warning_curvlist = pagethis.data.warning_curvlist
+          }
           break;
         case 'Humi_PV':
           pagethis.setData({
@@ -249,7 +349,12 @@ Page({
           })
           break;
         case 'NowSeg_time':
-          pagethis.data.run_info[4].value = '0H '+ pagethis.data.device_value.datastreams[index].datapoints[0].value + 'M',
+          var timeh = 0
+          var timem = 0
+          timem = pagethis.data.device_value.datastreams[index].datapoints[0].value % 60
+          timeh = Math.floor(pagethis.data.device_value.datastreams[index].datapoints[0].value / 60)
+          pagethis.data.run_info[4].value = timeh + 'H ' + timem + 'M'
+
           pagethis.setData({
             nowseg_time: pagethis.data.device_value.datastreams[index].datapoints[0].value,
             run_info: pagethis.data.run_info
@@ -263,8 +368,9 @@ Page({
         case 'Time_Curr':
           var timeh = 0
           var timem = 0
-          timeh = pagethis.data.device_value.datastreams[index].datapoints[0].value
-          pagethis.data.run_info[5].value = pagethis.data.device_value.datastreams[index].datapoints[0].value,
+          timem = pagethis.data.device_value.datastreams[index].datapoints[0].value % 60
+          timeh = Math.floor(pagethis.data.device_value.datastreams[index].datapoints[0].value / 60)
+          pagethis.data.run_info[5].value = timeh + 'H ' + timem+'M'
           pagethis.setData({
             time_curr: pagethis.data.device_value.datastreams[index].datapoints[0].value,
             run_info: pagethis.data.run_info
@@ -306,18 +412,19 @@ Page({
             runmode: pagethis.data.device_value.datastreams[index].datapoints[0].value,
           })
           break;
-        case 'Run_State':
-          if(pagethis.data.device_value.datastreams[index].datapoints[0].value == 0)
+        case 'password':
+          //验证密码
+          if (app.globalData.devicepassword != pagethis.data.device_value.datastreams[index].datapoints[0].value)
           {
-            pagethis.data.run_info[1].value = '停止'
-          }else{
-            pagethis.data.run_info[1].value = '正在运行'
+             this.setData({
+               view:false
+             })
+          }else
+          {
+            this.setData({
+              view: true
+            }) 
           }
-            
-          pagethis.setData({
-            run_state: pagethis.data.device_value.datastreams[index].datapoints[0].value,
-            run_info: pagethis.data.run_info
-          })
           break;
         default:
           break;
