@@ -14,9 +14,9 @@
 		"autoAudits": false
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.8.0",
+	"libVersion": "2.8.1",
 	"appid": "wxa34d64b6a07a27f8",
-	"projectname": "ColorUI-template",
+	"projectname": "happy",
 	"debugOptions": {
 		"hidedInDevtools": []
 	},
